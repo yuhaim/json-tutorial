@@ -15,37 +15,10 @@ static void lept_parse_whitespace(lept_context* c) {
     c->json = p;
 }
 
-static int lept_parse_true(lept_context* c, lept_value* v) {
-    EXPECT(c, 't');
-    if (c->json[0] != 'r' || c->json[1] != 'u' || c->json[2] != 'e')
-        return LEPT_PARSE_INVALID_VALUE;
-    c->json += 3;
-    v->type = LEPT_TRUE;
-    return LEPT_PARSE_OK;
-}
-
-static int lept_parse_false(lept_context* c, lept_value* v) {
-    EXPECT(c, 'f');
-    if (c->json[0] != 'a' || c->json[1] != 'l' || c->json[2] != 's' || c->json[3] != 'e')
-        return LEPT_PARSE_INVALID_VALUE;
-    c->json += 4;
-    v->type = LEPT_FALSE;
-    return LEPT_PARSE_OK;
-}
-
-static int lept_parse_null(lept_context* c, lept_value* v) {
-    EXPECT(c, 'n');
-    if (c->json[0] != 'u' || c->json[1] != 'l' || c->json[2] != 'l')
-        return LEPT_PARSE_INVALID_VALUE;
-    c->json += 3;
-    v->type = LEPT_NULL;
-    return LEPT_PARSE_OK;
-}
-
 static int lept_parse_literal(lept_context *c, lept_value *v, const char *literal, lept_type t){
 	EXPECT(c, literal[0]);
 	literal++;
-	while(c->json[0] == literal[0])
+	while(c->json[0] && c->json[0] == literal[0])
 	{
 		literal++;
 		c->json++;
@@ -57,7 +30,7 @@ static int lept_parse_literal(lept_context *c, lept_value *v, const char *litera
 }
 
 static int lept_parse_number(lept_context* c, lept_value* v) {
-    char* end;
+char* end;
     /* \TODO validate number */
     v->n = strtod(c->json, &end);
     if (c->json == end)
